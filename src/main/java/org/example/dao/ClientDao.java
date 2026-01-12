@@ -31,12 +31,24 @@ public class ClientDao {
             tx.commit();
         }
     }
+
     public static void delete(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
+
+            Long count = session.createQuery("SELECT COUNT(t) FROM Transport t WHERE t.client.id = :id", Long.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+
+            if (count > 0) {
+                throw new RuntimeException("Не може да изтриете клиента! Той има " + count + " поръчки.");
+            }
+
             Client client = session.get(Client.class, id);
-            if (client != null) session.remove(client);
-            tx.commit();
+            if (client != null) {
+                session.remove(client);
+                tx.commit();
+            }
         }
     }
 }

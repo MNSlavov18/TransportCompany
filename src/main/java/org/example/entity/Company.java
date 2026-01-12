@@ -6,14 +6,11 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.util.Set;
 
-@Entity
-@Table(name = "company")
+@Entity @Table(name = "company")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString(callSuper = true)
 public class Company extends BaseEntity {
-
     @Column(name = "name", unique = true, nullable = false)
-    @NotBlank(message = "Company name cannot be blank")
-    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 chars")
+    @NotBlank
     private String name;
 
     @Column(name = "revenue")

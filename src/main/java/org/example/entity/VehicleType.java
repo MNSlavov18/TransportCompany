@@ -1,5 +1,8 @@
 package org.example.entity;
 
 public enum VehicleType {
-    BUS, TRUCK, TANKER, VAN
+    BUS,
+    TRUCK,
+    TANKER,
+    VAN
 }

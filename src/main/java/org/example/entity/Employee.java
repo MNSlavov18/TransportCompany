@@ -5,13 +5,10 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "employee")
+@Entity @Table(name = "employee")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @ToString(callSuper = true)
 public class Employee extends BaseEntity {
-
-    @Column(nullable = false)
-    @NotBlank
+    @Column(nullable = false) @NotBlank
     private String name;
 
     @Enumerated(EnumType.STRING)
@@ -27,7 +24,5 @@ public class Employee extends BaseEntity {
     private Company company;
 
     @ToString.Include(name = "companyName")
-    public String getCompanyName() {
-        return company != null ? company.getName() : "N/A";
-    }
+    public String getCompanyName() { return company != null ? company.getName() : "N/A"; }
 }

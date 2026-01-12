@@ -6,8 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @MappedSuperclass
-@Getter @Setter
-@ToString
+@Getter @Setter @ToString
 public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

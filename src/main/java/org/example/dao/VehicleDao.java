@@ -31,12 +31,24 @@ public class VehicleDao {
             tx.commit();
         }
     }
+
     public static void delete(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
+
+            Long count = session.createQuery("SELECT COUNT(t) FROM Transport t WHERE t.vehicle.id = :id", Long.class)
+                    .setParameter("id", id)
+                    .uniqueResult();
+
+            if (count > 0) {
+                throw new RuntimeException("Не може да изтриете това МПС! То участва в " + count + " превоза.");
+            }
+
             Vehicle vehicle = session.get(Vehicle.class, id);
-            if (vehicle != null) session.remove(vehicle);
-            tx.commit();
+            if (vehicle != null) {
+                session.remove(vehicle);
+                tx.commit();
+            }
         }
     }
 }

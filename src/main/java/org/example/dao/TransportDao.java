@@ -1,13 +1,11 @@
 package org.example.dao;
 
 import org.example.configuration.SessionFactoryUtil;
-import org.example.dto.TransportDto;
 import org.example.entity.Company;
 import org.example.entity.Transport;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TransportDao {
     public static void save(Transport transport) {
@@ -33,15 +31,10 @@ public class TransportDao {
             return session.createQuery(hql, Transport.class).getResultList();
         }
     }
-    public static List<TransportDto> getByCompany(String companyId) {
+    public static List<Transport> getByCompanyId(String companyId) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             String hql = "SELECT t FROM Transport t LEFT JOIN FETCH t.company LEFT JOIN FETCH t.client LEFT JOIN FETCH t.driver LEFT JOIN FETCH t.vehicle WHERE t.company.id = :cid";
-            List<Transport> list = session.createQuery(hql, Transport.class).setParameter("cid", companyId).getResultList();
-            return list.stream().map(t -> new TransportDto(
-                    t.getId(), t.getStartPoint(), t.getEndPoint(), t.getPrice(),
-                    t.getDriver() != null ? t.getDriver().getName() : "N/A",
-                    t.getCompany() != null ? t.getCompany().getName() : "N/A",
-                    t.getDepartureDate())).collect(Collectors.toList());
+            return session.createQuery(hql, Transport.class).setParameter("cid", companyId).getResultList();
         }
     }
     public static void update(Transport transport) {
@@ -52,11 +45,20 @@ public class TransportDao {
         }
     }
     public static void delete(String id) {
-        try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            Transaction tx = session.beginTransaction();
+        Session session = SessionFactoryUtil.getSessionFactory().openSession();
+        Transaction tx = null;
+        try {
+            tx = session.beginTransaction();
             Transport transport = session.get(Transport.class, id);
-            if (transport != null) session.remove(transport);
-            tx.commit();
+            if (transport != null) {
+                session.remove(transport);
+                tx.commit();
+            }
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            throw new RuntimeException("Грешка при изтриване на транспорта.", e);
+        } finally {
+            session.close();
         }
     }
 }
