@@ -7,7 +7,6 @@ import org.hibernate.Transaction;
 import java.util.List;
 
 public class VehicleDao {
-
     public static void save(Vehicle vehicle) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
@@ -15,19 +14,16 @@ public class VehicleDao {
             tx.commit();
         }
     }
-
-    public static Vehicle getById(long id) {
+    public static Vehicle getById(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             return session.get(Vehicle.class, id);
         }
     }
-
     public static List<Vehicle> getAll() {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Vehicle", Vehicle.class).getResultList();
+            return session.createQuery("SELECT v FROM Vehicle v LEFT JOIN FETCH v.company", Vehicle.class).getResultList();
         }
     }
-
     public static void update(Vehicle vehicle) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
@@ -35,8 +31,7 @@ public class VehicleDao {
             tx.commit();
         }
     }
-
-    public static void delete(long id) {
+    public static void delete(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
             Vehicle vehicle = session.get(Vehicle.class, id);

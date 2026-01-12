@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 @Getter @Setter @AllArgsConstructor @ToString
 public class TransportDto {
-    private Long id;
+    private String id;
     private String startPoint;
     private String endPoint;
     private BigDecimal price;

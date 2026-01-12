@@ -13,7 +13,6 @@ public class SessionFactoryUtil {
         if (sessionFactory == null) {
             try {
                 Configuration configuration = new Configuration();
-
                 configuration.addAnnotatedClass(Company.class);
                 configuration.addAnnotatedClass(Employee.class);
                 configuration.addAnnotatedClass(Client.class);
@@ -25,7 +24,6 @@ public class SessionFactoryUtil {
                 sessionFactory = configuration.buildSessionFactory(serviceRegistry);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("Initial SessionFactory creation failed." + e);
                 throw new ExceptionInInitializerError(e);
             }
         }

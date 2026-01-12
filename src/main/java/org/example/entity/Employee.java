@@ -25,4 +25,9 @@ public class Employee extends BaseEntity {
     @JoinColumn(name = "company_id")
     @ToString.Exclude
     private Company company;
+
+    @ToString.Include(name = "companyName")
+    public String getCompanyName() {
+        return company != null ? company.getName() : "N/A";
+    }
 }

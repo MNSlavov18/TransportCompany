@@ -8,4 +8,5 @@ public class EmployeeDto {
     private String name;
     private Qualification qualification;
     private BigDecimal salary;
+    private String companyName;
 }

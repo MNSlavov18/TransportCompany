@@ -19,7 +19,7 @@ public class EmployeeDao {
         }
     }
 
-    public static Employee getById(long id) {
+    public static Employee getById(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             return session.get(Employee.class, id);
         }
@@ -27,7 +27,7 @@ public class EmployeeDao {
 
     public static List<Employee> getAll() {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
-            return session.createQuery("FROM Employee", Employee.class).getResultList();
+            return session.createQuery("SELECT e FROM Employee e LEFT JOIN FETCH e.company", Employee.class).getResultList();
         }
     }
 
@@ -39,7 +39,7 @@ public class EmployeeDao {
         }
     }
 
-    public static void delete(long id) {
+    public static void delete(String id) {
         try (Session session = SessionFactoryUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
             Employee employee = session.get(Employee.class, id);
@@ -48,9 +48,15 @@ public class EmployeeDao {
         }
     }
 
+    // --- ПРОМЯНА ТУК ---
     public static List<EmployeeDto> getSorted(boolean bySalary) {
         return getAll().stream()
-                .map(e -> new EmployeeDto(e.getName(), e.getQualification(), e.getSalary()))
+                .map(e -> new EmployeeDto(
+                        e.getName(),
+                        e.getQualification(),
+                        e.getSalary(),
+                        e.getCompanyName()
+                ))
                 .sorted(bySalary
                     ? Comparator.comparing(EmployeeDto::getSalary).reversed()
                     : Comparator.comparing(EmployeeDto::getQualification))
